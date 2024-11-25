@@ -1,5 +1,11 @@
 const endpointsJson = require("../endpoints.json");
+
 /* Set up your test imports here */
+const request = require('supertest');
+const app = require('../app');
+const seed = require('../db/seeds/seed');
+const db = require('../db/connection');
+const { articleData, commentData, topicData, userData } = require('../db/data/test-data');
 
 /* Set up your beforeEach & afterAll functions here */
 
