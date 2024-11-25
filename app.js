@@ -3,7 +3,6 @@ const app = express();
 const { getApi } = require('./controllers/api.controllers');
 const { getApiTopics } = require('./controllers/topics.controllers');
 
-app.use(express.json());
 
 app.get('/api', getApi);
 

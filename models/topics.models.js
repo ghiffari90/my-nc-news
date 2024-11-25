@@ -5,4 +5,5 @@ exports.fetchApiTopics = () => {
         .then(({ rows }) => {
             return rows;
         })
+
 };
