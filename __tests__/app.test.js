@@ -31,6 +31,7 @@ describe("GET /api/topics", () => {
       .expect(200)
       .then(({ body: { topics } }) => {
         expect(Array.isArray(topics)).toBe(true);
+        expect(topics.length).not.toBe(0);
         topics.forEach((topic) => {
           expect(topic).toMatchObject({
             slug: expect.any(String),
@@ -39,10 +40,12 @@ describe("GET /api/topics", () => {
         }); 
       });
   });
+});
 
+describe("GET non-existend URL", () => {
   test("404: Responds with a message of 'Bad Request' when the URL is not found", () => {
     return request(app)
-      .get("/api/topisc")
+      .get("/ap")
       .expect(404)
       .then(({ body }) => {
         expect(body).toEqual({});
