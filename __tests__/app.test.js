@@ -87,7 +87,6 @@ describe("GET /api/articles/:article_id", () => {
       .get('/api/articles/100')
       .expect(404)
       .then(({ body: { msg } }) => {
-        console.log(msg, "<<<--- msg");
         expect(msg).toBe('not found');
       });
   });
