@@ -25,7 +25,7 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/topics", () => {
-  test.only("200: Responds with an array of topic objects", () => {
+  test("200: Responds with an array of topic objects", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
