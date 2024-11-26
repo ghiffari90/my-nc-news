@@ -53,6 +53,31 @@ describe("GET non-existend URL", () => {
   });
 });
 
+describe("GET /api/articles", () => {
+  test("200: Responds with an array of article objects", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(Array.isArray(articles)).toBe(true);
+        expect(articles.length).not.toBe(0);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String),
+            article_img_url: expect.any(String)
+          });
+        });
+        expect(articles).toBeSortedBy('created_at', { descending: true });
+      });
+  });
+})
+
 describe("GET /api/articles/:article_id", () => {
   test("200: Responds with an article object with the article_id from the URL", () => {
     return request(app)
