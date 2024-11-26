@@ -2,16 +2,19 @@ const express = require('express');
 const app = express();
 const { getApi } = require('./controllers/api.controllers');
 const { getApiTopics } = require('./controllers/topics.controllers');
-
+const { getArticleById } = require('./controllers/articles.controllers');
+const { psqlErrorHandler, customErrorHandler, serverErrorHandler } = require('./error-handlers');
 
 app.get('/api', getApi);
 
 app.get('/api/topics', getApiTopics);
 
-app.use((err, req, res, next) => {
-    console.log(req, "<<<< req received by app");
-    console.log(res, "<<< response sent by app");
-    console.log(err, "<<<< err from app");
-});
+app.get('/api/articles/:article_id', getArticleById);
+
+app.use(psqlErrorHandler);
+
+app.use(customErrorHandler);
+
+app.use(serverErrorHandler);
 
 module.exports = app;
