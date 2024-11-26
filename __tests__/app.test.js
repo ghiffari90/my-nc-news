@@ -116,3 +116,44 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: Responds with an article object with the article_id from the URL", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body: { comments }  }) => {
+        expect(Array.isArray(comments)).toBe(true);
+        expect(comments.length).not.toBe(0);
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number)
+          });
+        });
+        expect(comments).toBeSortedBy('created_at', { descending: true });
+      })
+  });
+
+  test("400: Responds with a message 'Invalid id type' if the article_id in the URL is invalid", () => {
+    return request(app)
+      .get('/api/articles/one/comments')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Invalid id type')
+      });
+  });
+
+  test("404: Responds with a message 'not found' if the article_id in the URL is non-existent", () => {
+    return request(app)
+      .get('/api/articles/100/comments')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('not found');
+      });
+  });
+});
