@@ -157,3 +157,47 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: Responds with the posted comment when a comment is posted for a specific article identified by the given article_id", () => {
+    const expectedComment = 'Great article! Definitely worth to read.';
+    return request(app)
+      .post('/api/articles/7/comments')
+      .send({
+        username: 'lurker',
+        body: 'Great article! Definitely worth to read.'
+      })
+      .expect(201)
+      .then(({ body: { postedComment }}) => {
+        expect(postedComment).toBe(expectedComment);
+      })
+  });
+
+  test("400: Responds with a message 'Invalid id type' if the article_id in the URL is invalid", () => {
+    const expectedComment = 'Great article! Definitely worth to read.';
+    return request(app)
+      .post('/api/articles/seven/comments')
+      .send({
+        username: 'lurker',
+        body: 'Great article! Definitely worth to read.'
+      })
+      .expect(400)
+      .then(({ body: { msg }}) => {
+        expect(msg).toBe('Invalid id type');
+      })
+  });
+
+  test("404: Responds with a message 'not found' if the article_id in the URL is non-existent", () => {
+    const expectedComment = 'Great article! Definitely worth to read.';
+    return request(app)
+      .post('/api/articles/100/comments')
+      .send({
+        username: 'lurker',
+        body: 'Great article! Definitely worth to read.'
+      })
+      .expect(404)
+      .then(({ body: { msg }}) => {
+        expect(msg).toBe('not found');
+      })
+  });
+});
