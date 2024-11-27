@@ -42,8 +42,6 @@ exports.updateArticleById = (article_id, inc_votes) => {
     return db 
         .query(queryString, [ newVote, article_id ])
         .then(({ rows }) => {
-            console.log(rows, "<<< rows in model")
             return rows[0];
         })
-        .catch((err) => console.log(err, "<<<< err"))
 };

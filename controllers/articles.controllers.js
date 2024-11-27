@@ -20,7 +20,6 @@ exports.patchArticleById = (req, res, next) => {
     if(Object.keys(req.body).length !== 0){
         const { inc_votes } = req.body;
         updateArticleById(article_id, inc_votes).then((article) => {
-            console.log(article, "<<< response from SQL")
             res.status(200).send({ article });
         })
         .catch(next);
