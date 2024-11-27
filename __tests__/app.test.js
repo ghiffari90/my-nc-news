@@ -118,7 +118,7 @@ describe("GET /api/articles/:article_id", () => {
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
-  test("200: Responds with an article object with the article_id from the URL", () => {
+  test("200: Responds with an array of article object with the article_id from the URL", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
@@ -136,6 +136,16 @@ describe("GET /api/articles/:article_id/comments", () => {
           });
         });
         expect(comments).toBeSortedBy('created_at', { descending: true });
+      })
+  });
+
+  test("200: Responds with an empty array with the article_id from the URL if there are no comments in the article", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body: { comments }  }) => {
+        expect(Array.isArray(comments)).toBe(true);
+        expect(comments).toEqual([]);
       })
   });
 
