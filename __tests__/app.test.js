@@ -326,7 +326,7 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-describe.only("DELETE /api/comments/:comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
   test("204: Responds with status code and no content if the given comment_id exists", () => {
     return request(app)
       .delete('/api/comments/18')
@@ -351,3 +351,31 @@ describe.only("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("GET /api/users", () => {
+  test("200: Responds with an array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        expect(Array.isArray(users)).toBe(true);
+        expect(users.length).not.toBe(0);
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String)
+          });
+        });
+      });
+  });
+
+  test("404: Responds with a message of 'Bad Request' when the URL is not found", () => {
+    return request(app)
+      .get("/api/usesr")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+})
