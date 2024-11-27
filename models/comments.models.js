@@ -24,3 +24,18 @@ exports.checkArticleExists = (article_id) => {
             }
         })
 };
+
+exports.insertComment = (article_id, comments) => {
+    const body = comments.body;
+    const author = comments.username;
+    const queryString = `INSERT INTO comments
+                            (article_id, author, body)
+                        VALUES
+                            ($1, $2, $3) RETURNING *`;
+    return db
+        .query(queryString, [ article_id, author, body ])
+        .then(({ rows }) => {
+            return rows[0];
+        });
+}
+
