@@ -37,5 +37,18 @@ exports.insertComment = (article_id, comments) => {
         .then(({ rows }) => {
             return rows[0];
         });
-}
+};
+
+exports.deleteCommentById = (comment_id) => {
+    const queryString = `DELETE FROM comments
+                            WHERE comment_id = $1 RETURNING *`;
+    return db
+        .query(queryString, [ comment_id ])
+        .then(({ rows }) => {
+            if(!rows.length){
+                return Promise.reject({ status: 404, msg: 'not found'});
+            }
+            return;
+        });
+};
 
