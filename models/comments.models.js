@@ -8,9 +8,19 @@ exports.fetchCommentsByArticleId = (article_id) => {
     return db
         .query(queryString, [ article_id ])
         .then(({ rows }) => {
+            return rows;
+        });
+};
+
+exports.checkArticleExists = (article_id) => {
+    const queryString = `SELECT * 
+                            FROM articles
+                            WHERE article_id = $1`;
+    return db
+        .query(queryString, [article_id])
+        .then(({ rows }) => {
             if(!rows.length){
                 return Promise.reject({ status: 404, msg: 'not found' });
             }
-            return rows;
-        });
+        })
 };
