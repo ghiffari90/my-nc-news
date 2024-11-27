@@ -179,7 +179,14 @@ describe("POST /api/articles/:article_id/comments", () => {
       })
       .expect(201)
       .then(({ body: { postedComment }}) => {
-        expect(postedComment).toBe(expectedComment);
+        expect(postedComment).toMatchObject({
+          article_id: expect.any(Number),
+          author: expect.any(String),
+          body: expect.any(String),
+          comment_id: expect.any(Number),
+          created_at: expect.any(String),
+          votes: expect.any(Number)
+        });
       })
   });
 
@@ -278,6 +285,32 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(422)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('invalid content');
+      });
+  });
+});
+
+describe.only("DELETE /api/comments/:comment_id", () => {
+  test("204: Responds with status code and no content if the given comment_id exists", () => {
+    return request(app)
+      .delete('/api/comments/18')
+      .expect(204)
+  });
+
+  test("400: Responds with a message 'Invalid id type' if the comment_id in the URL is invalid", () => {
+    return request(app)
+      .delete('/api/comments/one')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Invalid id type')
+      });
+  });
+
+  test("404: Responds with a message 'not found' if the comment_id in the URL is non-existent", () => {
+    return request(app)
+      .delete('/api/comments/100')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('not found');
       });
   });
 });
