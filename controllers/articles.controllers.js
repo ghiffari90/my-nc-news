@@ -1,4 +1,5 @@
-const { fetchArticleById, fetchArticles } = require("../models/articles.models");
+const { articleData } = require("../db/data/test-data");
+const { fetchArticleById, fetchArticles, updateArticleById } = require("../models/articles.models");
 
 exports.getArticles = (req, res, next) => {
     fetchArticles().then((articles) => {
@@ -13,3 +14,17 @@ exports.getArticleById = (req, res, next) => {
     })
     .catch(next);
 }
+
+exports.patchArticleById = (req, res, next) => {
+    const { article_id } = req.params;
+    if(Object.keys(req.body).length !== 0){
+        const { inc_votes } = req.body;
+        updateArticleById(article_id, inc_votes).then((article) => {
+            console.log(article, "<<< response from SQL")
+            res.status(200).send({ article });
+        })
+        .catch(next);
+    } else {
+        res.status(204).send({});
+    }
+};

@@ -184,7 +184,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body: { msg }}) => {
         expect(msg).toBe('Invalid id type');
-      })
+      });
   });
 
   test("404: Responds with a message 'not found' if the article_id in the URL is non-existent", () => {
@@ -199,5 +199,75 @@ describe("POST /api/articles/:article_id/comments", () => {
       .then(({ body: { msg }}) => {
         expect(msg).toBe('not found');
       })
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: Responds with an updated article with the given article_id if the patch request has the right contents", () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({
+        inc_votes: -2
+      })
+      .expect(200)
+      .then(({ body : { article }}) => {
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 98,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
+      });
+  });
+
+  test("204: Responds with an article with the given article_id if the patch request has no contents", () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({})
+      .expect(204)
+      .then(({ body }) => {
+          expect(body).toEqual({});
+      });
+  });
+
+  test("400: Responds with a message 'Invalid id type' if the content value of the patch request is invalid ", () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({
+        inc_votes: 'five'
+      })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Invalid id type');
+      });
+  });
+
+  test("400: Responds with a message 'Invalid id type' if the article_id in the URL is invalid", () => {
+    return request(app)
+      .patch('/api/articles/one')
+      .send({
+        inc_votes: 5
+      })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Invalid id type');
+      });
+  });
+
+  test("422: Responds with an unmodified article with the given article_id if the content key of the patch is invalid", () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({
+        votes: 3
+      })
+      .expect(422)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('invalid content');
+      });
   });
 });
