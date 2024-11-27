@@ -204,12 +204,49 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 
+  test("422: Responds with a message 'invalid content' if there is no body property", () => {
+    return request(app)
+      .post('/api/articles/7/comments')
+      .send({
+        username: 'lurker',
+      })
+      .expect(422)
+      .then(({ body: { msg }}) => {
+        expect(msg).toBe('invalid content');
+      })
+  });
+
+  test("422: Responds with a message 'invalid content' if there is no username property", () => {
+    return request(app)
+      .post('/api/articles/7/comments')
+      .send({
+        body: 'Great article! Definitely worth to read.'
+      })
+      .expect(422)
+      .then(({ body: { msg }}) => {
+        expect(msg).toBe('invalid content');
+      })
+  });
+
   test("404: Responds with a message 'not found' if the article_id in the URL is non-existent", () => {
     const expectedComment = 'Great article! Definitely worth to read.';
     return request(app)
       .post('/api/articles/100/comments')
       .send({
         username: 'lurker',
+        body: 'Great article! Definitely worth to read.'
+      })
+      .expect(404)
+      .then(({ body: { msg }}) => {
+        expect(msg).toBe('not found');
+      })
+  });
+
+  test("404: Responds with a message 'not found' if the username doesn't exist", () => {
+    return request(app)
+      .post('/api/articles/4/comments')
+      .send({
+        username: 'ghiffari',
         body: 'Great article! Definitely worth to read.'
       })
       .expect(404)
