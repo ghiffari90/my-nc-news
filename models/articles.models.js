@@ -1,21 +1,36 @@
 const db = require('../db/connection');
 
-exports.fetchArticles = () => {
+exports.fetchArticles = (sort_by, order) => {
+    let queryString =   `SELECT
+                            articles.author,
+                            articles.title,
+                            articles.article_id,
+                            articles.topic,
+                            articles.created_at,
+                            articles.votes,
+                            articles.article_img_url,
+                        COUNT(comments.body) AS comment_count
+                        FROM articles
+                        LEFT OUTER JOIN comments
+                        ON articles.article_id = comments.article_id
+                        GROUP BY articles.article_id
+                        ORDER BY `;
+    const queryValues = [];
+
+    if(sort_by){
+        queryString += `articles.${sort_by} `;
+    } else {
+        queryString += `articles.created_at `;
+    }
+
+    if(order){
+        queryString += order;
+    } else {
+        queryString += 'DESC';
+    }
+
     return db
-        .query(`SELECT
-                    articles.author,
-                    articles.title,
-                    articles.article_id,
-                    articles.topic,
-                    articles.created_at,
-                    articles.votes,
-                    articles.article_img_url,
-                    COUNT(comments.body) AS comment_count
-                    FROM articles
-                    LEFT OUTER JOIN comments
-                    ON articles.article_id = comments.article_id
-                    GROUP BY articles.article_id
-                    ORDER BY articles.created_at DESC`)
+        .query(queryString, queryValues)
         .then(({ rows }) => {
             return rows;
         });
