@@ -79,7 +79,7 @@ describe("GET /api/articles", () => {
 })
 
 describe("GET /api/articles/:article_id", () => {
-  test("200: Responds with an article object with the article_id from the URL", () => {
+  test("200: Responds with an article object with the article_id from the URL and with comment_count as an additional key", () => {
     return request(app)
       .get("/api/articles/3")
       .expect(200)
@@ -94,6 +94,7 @@ describe("GET /api/articles/:article_id", () => {
           votes: 0,
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          comment_count: "2"
         });
       })
   });
