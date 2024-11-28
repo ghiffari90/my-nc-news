@@ -1,6 +1,14 @@
 const db = require('../db/connection');
 
-exports.fetchArticles = (sort_by, order) => {
+exports.fetchArticles = (sort_by, order, topic) => {
+    let filterByTopicQueryStr = ``;
+    const queryValues = [];
+
+    if(topic){
+        filterByTopicQueryStr = `WHERE topic = $1`;
+        queryValues.push(topic);
+    }
+
     let queryString =   `SELECT
                             articles.author,
                             articles.title,
@@ -12,10 +20,10 @@ exports.fetchArticles = (sort_by, order) => {
                         COUNT(comments.body) AS comment_count
                         FROM articles
                         LEFT OUTER JOIN comments
-                        ON articles.article_id = comments.article_id
-                        GROUP BY articles.article_id
+                        ON articles.article_id = comments.article_id `
+                        + filterByTopicQueryStr + 
+                        ` GROUP BY articles.article_id
                         ORDER BY `;
-    const queryValues = [];
 
     if(sort_by){
         queryString += `articles.${sort_by} `;
@@ -34,7 +42,7 @@ exports.fetchArticles = (sort_by, order) => {
         .then(({ rows }) => {
             return rows;
         });
-}
+};
 
 exports.fetchArticleById = (article_id) => {
     const queryString = 'SELECT * FROM articles WHERE article_id = $1';
@@ -59,4 +67,15 @@ exports.updateArticleById = (article_id, inc_votes) => {
         .then(({ rows }) => {
             return rows[0];
         })
+};
+
+exports.checkTopicExists = (topic) => {
+    return db
+        .query(`SELECT * FROM articles
+                WHERE topic = $1`, [ topic ])
+        .then(({ rows }) => {
+            if(!rows.length){
+                return Promise.reject({ status: 404, msg: 'topic not found'});
+            };
+        });
 };

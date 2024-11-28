@@ -564,3 +564,83 @@ describe("/api/articles?sort_by=query1&order=query2", () => {
       });
   });
 });
+
+describe("GET /api/articles?topic=query", () => {
+  test("200: Responds with a filtered array of articles by the topic query", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(Array.isArray(articles)).toBe(true);
+        expect(articles.length).toBe(1);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String),
+            article_img_url: expect.any(String)
+          });
+        });
+        expect(articles).toBeSortedBy('created_at', { descending: true });
+      })
+  });
+
+  test("200: Responds with an array of all articles if the topic query is omitted", () => {
+    return request(app)
+      .get("/api/articles?topic=")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(Array.isArray(articles)).toBe(true);
+        expect(articles.length).toBe(13);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String),
+            article_img_url: expect.any(String)
+          });
+        });
+        expect(articles).toBeSortedBy('created_at', { descending: true });
+      })
+  });
+
+  test("200: Responds with an array of all articles if the word 'topic' is mistyped", () => {
+    return request(app)
+      .get("/api/articles?topci=cats")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(Array.isArray(articles)).toBe(true);
+        expect(articles.length).toBe(13);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String),
+            article_img_url: expect.any(String)
+          });
+        });
+        expect(articles).toBeSortedBy('created_at', { descending: true });
+      })
+  });
+
+  test("404: Responds with a message of 'not found' when the given topic is non-existent", () => {
+    return request(app)
+      .get("/api/articles?topic=dogs")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('topic not found');
+      });
+  });
+})
