@@ -6,7 +6,7 @@ exports.psqlErrorHandler = (err, req, res, next) => {
     } else if(err.code === '23503'){
         res.status(404).send({ msg: 'not found' })
     } else if(err.code === '23502') {
-        res.status(422).send({ msg: 'invalid content' });
+        res.status(400).send({ msg: 'missing required field(s)' });
     } else if(err.code === '42703') {
         res.status(400).send({ msg: 'Invalid column'})
     } else if (err.code === '42601') {
