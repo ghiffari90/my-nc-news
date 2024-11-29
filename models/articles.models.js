@@ -80,7 +80,7 @@ exports.updateArticleById = (article_id, inc_votes) => {
         .query(queryString, [ newVote, article_id ])
         .then(({ rows }) => {
             return rows[0];
-        })
+        });
 };
 
 exports.checkTopicExists = (topic) => {

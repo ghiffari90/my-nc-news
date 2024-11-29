@@ -280,13 +280,13 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 
-  test("204: Responds with an article with the given article_id if the patch request has no contents", () => {
+  test("400: Responds with an article with the given article_id if the patch request has no contents", () => {
     return request(app)
       .patch('/api/articles/1')
       .send({})
-      .expect(204)
-      .then(({ body }) => {
-          expect(body).toEqual({});
+      .expect(400)
+      .then(({ body: { msg } }) => {
+          expect(msg).toBe('missing required field(s)');
       });
   });
 
@@ -314,17 +314,17 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 
-  // test("422: Responds with an unmodified article with the given article_id if the content key of the patch is invalid", () => {
-  //   return request(app)
-  //     .patch('/api/articles/1')
-  //     .send({
-  //       votes: 3
-  //     })
-  //     .expect(422)
-  //     .then(({ body: { msg } }) => {
-  //       expect(msg).toBe('invalid content');
-  //     });
-  // });
+  test("400: Responds with an unmodified article with the given article_id if the content key of the patch is invalid", () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({
+        votes: 3
+      })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('missing required field(s)');
+      });
+  });
 });
 
 describe("DELETE /api/comments/:comment_id", () => {
