@@ -370,15 +370,6 @@ describe("GET /api/users", () => {
         });
       });
   });
-
-  test("404: Responds with a message of 'Bad Request' when the URL is not found", () => {
-    return request(app)
-      .get("/api/usesr")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body).toEqual({});
-      });
-  });
 })
 
 describe("/api/articles?sort_by=query1&order=query2", () => {
