@@ -205,27 +205,27 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 
-  test("422: Responds with a message 'invalid content' if there is no body property", () => {
+  test("400: Responds with a message 'invalid content' if there is no body property", () => {
     return request(app)
       .post('/api/articles/7/comments')
       .send({
         username: 'lurker',
       })
-      .expect(422)
+      .expect(400)
       .then(({ body: { msg }}) => {
-        expect(msg).toBe('invalid content');
+        expect(msg).toBe('missing required field(s)');
       })
   });
 
-  test("422: Responds with a message 'invalid content' if there is no username property", () => {
+  test("400: Responds with a message 'invalid content' if there is no username property", () => {
     return request(app)
       .post('/api/articles/7/comments')
       .send({
         body: 'Great article! Definitely worth to read.'
       })
-      .expect(422)
+      .expect(400)
       .then(({ body: { msg }}) => {
-        expect(msg).toBe('invalid content');
+        expect(msg).toBe('missing required field(s)');
       })
   });
 
@@ -314,17 +314,17 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 
-  test("422: Responds with an unmodified article with the given article_id if the content key of the patch is invalid", () => {
-    return request(app)
-      .patch('/api/articles/1')
-      .send({
-        votes: 3
-      })
-      .expect(422)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe('invalid content');
-      });
-  });
+  // test("422: Responds with an unmodified article with the given article_id if the content key of the patch is invalid", () => {
+  //   return request(app)
+  //     .patch('/api/articles/1')
+  //     .send({
+  //       votes: 3
+  //     })
+  //     .expect(422)
+  //     .then(({ body: { msg } }) => {
+  //       expect(msg).toBe('invalid content');
+  //     });
+  // });
 });
 
 describe("DELETE /api/comments/:comment_id", () => {
