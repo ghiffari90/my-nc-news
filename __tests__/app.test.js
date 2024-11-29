@@ -280,7 +280,7 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 
-  test("204: Responds with an article with the given article_id if the patch request has no contents", () => {
+  test("400: Responds with an article with the given article_id if the patch request has no contents", () => {
     return request(app)
       .patch('/api/articles/1')
       .send({})
