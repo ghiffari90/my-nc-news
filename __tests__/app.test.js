@@ -60,7 +60,7 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body: { articles } }) => {
         expect(Array.isArray(articles)).toBe(true);
-        expect(articles.length).not.toBe(0);
+        expect(articles.length).toBe(13);
         articles.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
